@@ -13,6 +13,7 @@
 		6E3379542BD924EA00C9394A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 6E3379532BD924EA00C9394A /* Base */; };
 		6E3379562BD924EE00C9394A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E3379552BD924EE00C9394A /* Assets.xcassets */; };
 		6E3379592BD924EE00C9394A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 6E3379582BD924EE00C9394A /* Base */; };
+		6E3379692BD928C600C9394A /* ConnectSDKApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6E3379682BD928C600C9394A /* ConnectSDKApi */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E3379692BD928C600C9394A /* ConnectSDKApi in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = "ConnectSDK-iOS-App";
+			packageProductDependencies = (
+				6E3379682BD928C600C9394A /* ConnectSDKApi */,
+			);
 			productName = "ConnectSDK-iOS-App";
 			productReference = 6E3379492BD924EA00C9394A /* ConnectSDK-iOS-App.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 6E3379402BD924EA00C9394A;
+			packageReferences = (
+				6E3379672BD928C600C9394A /* XCRemoteSwiftPackageReference "ConnectSDKApi" */,
+			);
 			productRefGroup = 6E33794A2BD924EA00C9394A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -363,6 +371,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6E3379672BD928C600C9394A /* XCRemoteSwiftPackageReference "ConnectSDKApi" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simbaste/ConnectSDKApi.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6E3379682BD928C600C9394A /* ConnectSDKApi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E3379672BD928C600C9394A /* XCRemoteSwiftPackageReference "ConnectSDKApi" */;
+			productName = ConnectSDKApi;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6E3379412BD924EA00C9394A /* Project object */;
 }

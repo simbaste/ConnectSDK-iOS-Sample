@@ -1,0 +1,15 @@
+{
+  "originHash" : "669eae5c1d6c0d882886019cb5e588c5d4b00b62d0a3bcf161d56b5abf4c6594",
+  "pins" : [
+    {
+      "identity" : "connectsdkapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/simbaste/ConnectSDKApi.git",
+      "state" : {
+        "revision" : "b98c61d6517abdbff80a76ba7fe2f8f71cce9fd6",
+        "version" : "1.0.4"
+      }
+    }
+  ],
+  "version" : 3
+}
