@@ -20,6 +20,8 @@ class DevicesViewController: UIViewController,
     var loadingLabel: UILabel?
     
     var connectSDKWrapper = ConnectSDKWrapper()
+    
+    var hasReceivedDevices = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +42,17 @@ class DevicesViewController: UIViewController,
         view.addSubview(loadingLabel!)
         
         connectSDKWrapper.delegate = self
+        useFakeDevicesIfNeeded()
         findDevice()
+    }
+    
+    func useFakeDevicesIfNeeded() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            if !self.hasReceivedDevices {
+                let fakeDevices = self.getFakeDevices()
+                self.didFind(fakeDevices)
+            }
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -82,6 +94,7 @@ class DevicesViewController: UIViewController,
     
     func didFind(_ devices: [DeviceWrapper]) {
         print("find devices ==> \(devices)")
+        hasReceivedDevices = true
         hideLoader() // Cacher l'écran de chargement une fois que les appareils sont trouvés
         discoveredDevices = devices
         tableView.reloadData() // Mettre à jour la table avec les appareils découverts
@@ -112,5 +125,18 @@ class DevicesViewController: UIViewController,
         loaderView = nil
         loadingLabel?.isHidden = true
     }
+    
+    // MARK: - Fake Devices
+    
+    func getFakeDevices() -> [DeviceWrapper] {
+        // Create an array of fake devices
+        var fakeDevices: [DeviceWrapper] = []
+        for i in 1...5 {
+            let device = FakeDevice(name: "Fake Device \(i)", description: "description \(i))", isConnected: false)
+            fakeDevices.append(DeviceWrapper(nil, device))
+        }
+        return fakeDevices
+    }
+
 
 }
