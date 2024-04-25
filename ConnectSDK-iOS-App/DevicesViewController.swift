@@ -19,7 +19,7 @@ class DevicesViewController: UIViewController,
     var loaderView: UIView? // Vue pour l'écran de chargement
     var loadingLabel: UILabel?
     
-    var connectSDKApi = ConnectSDKWrapper()
+    var connectSDKWrapper = ConnectSDKWrapper()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +39,7 @@ class DevicesViewController: UIViewController,
         loadingLabel?.isHidden = true
         view.addSubview(loadingLabel!)
         
-        connectSDKApi.delegate = self
+        connectSDKWrapper.delegate = self
         findDevice()
     }
 
@@ -77,7 +77,7 @@ class DevicesViewController: UIViewController,
     func findDevice() {
         print("findDevice() called")
         showLoader()
-        connectSDKApi.searchForDevices()
+        connectSDKWrapper.searchForDevices()
     }
     
     func didFind(_ devices: [DeviceWrapper]) {
