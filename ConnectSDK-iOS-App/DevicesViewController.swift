@@ -7,20 +7,19 @@
 
 import UIKit
 import ConnectSDKApi
-import ConnectSDK
 
-class ViewController: UIViewController,
+class DevicesViewController: UIViewController,
                       UITableViewDelegate,
                       UITableViewDataSource,
                       UINavigationControllerDelegate,
-                      ConnectSDKDelegate {
+                      DiscoveryManagerWrapperDelegate {
     
     let tableView = UITableView()
-    var discoveredDevices: [ConnectableDevice] = [] // Propriété pour stocker les appareils découverts
+    var discoveredDevices: [DeviceWrapper] = [] // Propriété pour stocker les appareils découverts
     var loaderView: UIView? // Vue pour l'écran de chargement
     var loadingLabel: UILabel?
     
-    var connectSDKApi = ConnectSDKApi()
+    var connectSDKApi = ConnectSDKWrapper()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +57,18 @@ class ViewController: UIViewController,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let device = discoveredDevices[indexPath.row]
-        cell.textLabel?.text = device.friendlyName // Afficher le nom de l'appareil dans la cellule
+        cell.textLabel?.text = device.name // Afficher le nom de l'appareil dans la cellule
+        cell.detailTextLabel?.text = device.description
+        
+        if device.isConnected {
+            let greenView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+            greenView.backgroundColor = UIColor.green
+            greenView.layer.cornerRadius = 10
+            cell.accessoryView = greenView
+        } else {
+            cell.accessoryView = nil
+        }
+        
         return cell
     }
 
@@ -70,25 +80,17 @@ class ViewController: UIViewController,
         connectSDKApi.searchForDevices()
     }
     
-    func didFindDevices(_ devices: [ConnectableDevice]) {
+    func didFind(_ devices: [DeviceWrapper]) {
         print("find devices ==> \(devices)")
         hideLoader() // Cacher l'écran de chargement une fois que les appareils sont trouvés
         discoveredDevices = devices
         tableView.reloadData() // Mettre à jour la table avec les appareils découverts
     }
     
-    func didFailWithError(_ error: any Error) {
+    func didFail(with error: any Error) {
         print("Failed to find devices ==> \(error)")
         hideLoader() // Cacher l'écran de chargement en cas d'erreur
         // Afficher un message d'erreur à l'utilisateur
-    }
-    
-    func device(didConnected device: ConnectableDevice) {
-        print("device connected ==> \(device)")
-    }
-    
-    func device(didDisconnected device: ConnectableDevice, withError error: any Error) {
-        print("device disconnected ==> \(device) with error ==> \(error)")
     }
     
     // MARK: - Loader Methods
