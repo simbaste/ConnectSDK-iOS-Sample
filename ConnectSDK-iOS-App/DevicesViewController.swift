@@ -24,6 +24,7 @@ class DevicesViewController: UIViewController,
     var hasReceivedDevices = false
 
     override func viewDidLoad() {
+        print("viewDidLoad() called")
         super.viewDidLoad()
 
         title = "Connect SDK Devices"
@@ -83,6 +84,23 @@ class DevicesViewController: UIViewController,
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Get the selected device
+        let selectedDevice = discoveredDevices[indexPath.row]
+        
+        // Perform segue to DeviceDetailViewController
+        performSegue(withIdentifier: "DeviceDetailViewController", sender: selectedDevice)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DeviceDetailViewController" {
+            if let destinationVC = segue.destination as? DeviceDetailViewController,
+                let selectedDevice = sender as? DeviceWrapper {
+                destinationVC.device = selectedDevice
+            }
+        }
+    }
 
     // MARK: - ConnectSDK Api Delegate
 
@@ -90,6 +108,13 @@ class DevicesViewController: UIViewController,
         print("findDevice() called")
         showLoader()
         connectSDKWrapper.searchForDevices()
+    }
+    
+    
+    func stopFindingDevice() {
+        print("stopFindingDevice() called")
+        hideLoader()
+        connectSDKWrapper.stopSearchingForDevices()
     }
     
     func didFind(_ devices: [DeviceWrapper]) {

@@ -14,6 +14,7 @@
 		6E3379562BD924EE00C9394A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E3379552BD924EE00C9394A /* Assets.xcassets */; };
 		6E3379592BD924EE00C9394A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 6E3379582BD924EE00C9394A /* Base */; };
 		6E3379692BD928C600C9394A /* ConnectSDKApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6E3379682BD928C600C9394A /* ConnectSDKApi */; };
+		6EB39DA72BDA736900DF382B /* DeviceDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB39DA62BDA736900DF382B /* DeviceDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		6E3379552BD924EE00C9394A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E3379582BD924EE00C9394A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6E33795A2BD924EE00C9394A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6EB39DA62BDA736900DF382B /* DeviceDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				6E33794C2BD924EA00C9394A /* AppDelegate.swift */,
 				6E33794E2BD924EA00C9394A /* SceneDelegate.swift */,
 				6E3379502BD924EA00C9394A /* DevicesViewController.swift */,
+				6EB39DA62BDA736900DF382B /* DeviceDetailViewController.swift */,
 				6E3379522BD924EA00C9394A /* Main.storyboard */,
 				6E3379552BD924EE00C9394A /* Assets.xcassets */,
 				6E3379572BD924EE00C9394A /* LaunchScreen.storyboard */,
@@ -148,6 +151,7 @@
 			files = (
 				6E3379512BD924EA00C9394A /* DevicesViewController.swift in Sources */,
 				6E33794D2BD924EA00C9394A /* AppDelegate.swift in Sources */,
+				6EB39DA72BDA736900DF382B /* DeviceDetailViewController.swift in Sources */,
 				6E33794F2BD924EA00C9394A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

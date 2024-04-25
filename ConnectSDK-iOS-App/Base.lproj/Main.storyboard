@@ -20,17 +20,17 @@
                     </view>
                     <navigationItem key="navigationItem" id="aPo-jd-BRB"/>
                     <connections>
-                        <segue destination="5ZH-iL-LTS" kind="show" id="xn9-7G-h8K"/>
+                        <segue destination="5ZH-iL-LTS" kind="show" identifier="DeviceDetailViewController" id="xn9-7G-h8K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1052.6717557251909" y="4.9295774647887329"/>
         </scene>
-        <!--View Controller-->
+        <!--Device Detail View Controller-->
         <scene sceneID="WhN-L4-Noq">
             <objects>
-                <viewController id="5ZH-iL-LTS" sceneMemberID="viewController">
+                <viewController id="5ZH-iL-LTS" customClass="DeviceDetailViewController" customModule="ConnectSDK_iOS_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="by5-6d-ErP">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
