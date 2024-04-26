@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ConnectSDKApi
+import ConnectSDKWrapper
 
 class DevicesViewController: UIViewController,
                       UITableViewDelegate,

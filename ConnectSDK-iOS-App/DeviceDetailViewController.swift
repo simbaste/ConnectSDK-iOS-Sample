@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ConnectSDKApi
+import ConnectSDKWrapper
 
 class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDelegate {
     
@@ -94,13 +94,13 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
     
     // MARK: - ConnectableDeviceWrapperDelegate
     
-    func device(didConnected device: ConnectSDKApi.DeviceWrapper) {
+    func device(didConnected device: DeviceWrapper) {
         print("didConnected device ==> \(device) isConnected ==> \(device.isConnected)")
         self.device = device
         self.setupDeviceInfo()
     }
     
-    func device(didDisconnected device: ConnectSDKApi.DeviceWrapper, withError error: any Error) {
+    func device(didDisconnected device: DeviceWrapper, withError error: any Error) {
         print("didDisconnected device \(device) with error \(error)")
         self.device = device
         self.setupDeviceInfo()
