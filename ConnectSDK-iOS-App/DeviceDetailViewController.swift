@@ -70,6 +70,11 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         animateButtonTap(sender)
         if sender == playButton {
             // Handle play button action
+            device?.openBrowser(with: "https://www.netgem.com/fr", success: { launchSession in
+                print("launch browser")
+            }, failure: { error in
+                print("launch browser failed")
+            })
         } else if sender == connectButton {
             device?.connect()
             if let device = device {
