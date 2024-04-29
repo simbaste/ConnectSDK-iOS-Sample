@@ -15,6 +15,7 @@ class DevicesViewController: UIViewController,
                       DiscoveryManagerWrapperDelegate {
     
     let tableView = UITableView()
+    var refreshControl = UIRefreshControl()
     var discoveredDevices: [DeviceWrapper] = [] // Propriété pour stocker les appareils découverts
     var loaderView: UIView? // Vue pour l'écran de chargement
     var loadingLabel: UILabel?
@@ -41,6 +42,10 @@ class DevicesViewController: UIViewController,
         loadingLabel?.textAlignment = .center
         loadingLabel?.isHidden = true
         view.addSubview(loadingLabel!)
+        
+        // Set up pull-to-refresh
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         
         connectSDKWrapper.delegate = self
         useFakeDevicesIfNeeded()
@@ -100,6 +105,11 @@ class DevicesViewController: UIViewController,
                 destinationVC.device = selectedDevice
             }
         }
+    }
+    
+    @objc func refreshData() {
+        tableView.reloadData()
+        refreshControl.endRefreshing()
     }
 
     // MARK: - ConnectSDK Api Delegate
