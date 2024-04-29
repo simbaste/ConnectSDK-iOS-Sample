@@ -110,6 +110,18 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         self.device = device
         self.setupDeviceInfo()
     }
+    
+    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingRequiredOfType pairingType: Int32) {
+        print("pairingRequiredOfType() called with device = \(device), service = \(service), pairingType = \(pairingType)")
+    }
+    
+    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingFailedWithError error: (any Error)!) {
+        print("pairingFailedWithError() called with device = \(device), service = \(service), error = \(String(describing: error))")
+    }
+    
+    func deviceParingSucced(_device: DeviceWrapper, service: DeviceServiceWrapper) {
+        print("deviceParingSucced() called with device = \(String(describing: device)), service = \(service)")
+    }
 
 }
 
