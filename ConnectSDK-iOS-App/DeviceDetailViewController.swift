@@ -8,6 +8,9 @@
 import UIKit
 import ConnectSDKWrapper
 
+import UIKit
+import ConnectSDKWrapper
+
 class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDelegate {
     
     // Device information
@@ -19,15 +22,20 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
     let statusLabel = UILabel()
     let playButton = UIButton()
     let connectButton = UIButton()
+    let volumeSlider = UISlider()
+    let statusIndicator = UIView()
+    let snackbar = UILabel()
 
     fileprivate func setupDeviceInfo() {
         // Set up device information
         if let device = device {
             nameLabel.text = device.name
-            descriptionLabel.text = device.description
+            descriptionLabel.text = "Service: \(device.services)\n Capabilities: \(device.capabilities)"
             statusLabel.text = device.isConnected ? "Connected" : "Disconnected"
+            statusIndicator.backgroundColor = device.isConnected ? .green : .gray
         }
         playButton.isEnabled = device?.isConnected ?? false
+        volumeSlider.isEnabled = device?.isConnected ?? false
         playButton.backgroundColor = playButton.isEnabled ? .blue : .lightGray
     }
     
@@ -42,6 +50,10 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
 
         statusLabel.frame = CGRect(x: 20, y: 200, width: view.frame.width - 40, height: 30)
         view.addSubview(statusLabel)
+        
+        statusIndicator.frame = CGRect(x: view.frame.width - 60, y: 200, width: 20, height: 20)
+        statusIndicator.layer.cornerRadius = statusIndicator.frame.width / 2
+        view.addSubview(statusIndicator)
 
         playButton.frame = CGRect(x: 20, y: 250, width: view.frame.width - 40, height: 40)
 
@@ -53,8 +65,36 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         
         setupDeviceInfo()
         device?.delegate = self
+        
+        volumeSlider.frame = CGRect(x: 20, y: 350, width: view.frame.width - 40, height: 40)
+        volumeSlider.minimumValue = 0
+        volumeSlider.maximumValue = 100
+        volumeSlider.addTarget(self, action: #selector(volumeSliderValueChanged(_:)), for: .valueChanged)
+        view.addSubview(volumeSlider)
+        
+        snackbar.frame = CGRect(x: 20, y: view.frame.height - 100, width: view.frame.width - 40, height: 40)
+        snackbar.isHidden = true
+        snackbar.backgroundColor = .darkGray
+        snackbar.textColor = .white
+        snackbar.textAlignment = .center
+        view.addSubview(snackbar)
     }
     
+    @objc func volumeSliderValueChanged(_ sender: UISlider) {
+        guard let device = device else { return }
+        if device.isConnected {
+            let volume = sender.value
+            // Set volume on the connected device
+            // Example: device.setVolume(volume: volume, success: { ... }, failure: { ... })
+            device.setVolume(volume: volume) { launchSession in
+                print("Volume updated")
+            } failure: { error in
+                print("Failed to set the volume")
+            }
+
+        }
+    }
+
     private func setupButton(_ button: UIButton, title: String, yPosition: CGFloat) {
         button.frame = CGRect(x: 20, y: yPosition, width: view.frame.width - 40, height: 40)
         button.setTitle(title, for: .normal)
@@ -72,14 +112,19 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
             // Handle play button action
             device?.openBrowser(with: "https://www.netgem.com/fr", success: { launchSession in
                 print("launch browser")
+                self.showSnackbar("Browser launched")
             }, failure: { error in
                 print("launch browser failed")
+                self.showAlert("Launch browser failed", "Couldn't launch browser on the derired device")
             })
         } else if sender == connectButton {
-            device?.connect()
             if let device = device {
-                self.device = DeviceWrapper(nil, FakeDevice(name: device.name!, description: device.description, isConnected: !device.isConnected))
-                device.delegate?.device(didConnected: self.device!)
+                if device.isConnected {
+                    device.disconnect()
+                } else {
+                    device.connect()
+                }
+                setupDeviceInfo()
             }
         }
     }
@@ -101,27 +146,54 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
     
     func device(didConnected device: DeviceWrapper) {
         print("didConnected device ==> \(device) isConnected ==> \(device.isConnected)")
-        self.device = device
-        self.setupDeviceInfo()
+        DispatchQueue.main.async {
+            self.device = device
+            self.setupDeviceInfo()
+            self.connectButton.setTitle("Disconnect", for: .normal)
+            self.statusIndicator.backgroundColor = .green
+            self.showSnackbar("Device connected")
+        }
     }
     
-    func device(didDisconnected device: DeviceWrapper, withError error: any Error) {
+    func device(didDisconnected device: DeviceWrapper, withError error: Error) {
         print("didDisconnected device \(device) with error \(error)")
-        self.device = device
-        self.setupDeviceInfo()
+        DispatchQueue.main.async {
+            self.device = device
+            self.setupDeviceInfo()
+            self.connectButton.setTitle("Connect", for: .normal)
+            self.statusIndicator.backgroundColor = .gray
+        }
     }
     
     func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingRequiredOfType pairingType: Int32) {
         print("pairingRequiredOfType() called with device = \(device), service = \(service), pairingType = \(pairingType)")
-    }
-    
-    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingFailedWithError error: (any Error)!) {
-        print("pairingFailedWithError() called with device = \(device), service = \(service), error = \(String(describing: error))")
+        showAlert("Pairing Required", "Pairing is required for this service.")
     }
     
     func deviceParingSucced(_device: DeviceWrapper, service: DeviceServiceWrapper) {
         print("deviceParingSucced() called with device = \(String(describing: device)), service = \(service)")
+        self.showSnackbar("Device paired")
+    }
+    
+    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingFailedWithError error: Error) {
+        print("pairingFailedWithError() called with device = \(device), service = \(service), error = \(error)")
+        showAlert("Pairing Failed", "Pairing failed with error: \(error.localizedDescription)")
+    }
+    
+    // MARK - Helpers functions
+    
+    fileprivate func showSnackbar(_ title: String) {
+        self.snackbar.text = title
+        self.snackbar.isHidden = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.snackbar.isHidden = true
+        }
+    }
+    
+    fileprivate func showAlert(_ title: String, _ message: String) {
+        let alertController = UIAlertController(title: title, message:  message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 
 }
-
