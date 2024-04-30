@@ -30,7 +30,9 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         // Set up device information
         if let device = device {
             nameLabel.text = device.name
-            descriptionLabel.text = "Service: \(device.services)\n Capabilities: \(device.capabilities)"
+            let services = device.services.map { $0.name }.joined(separator: ", ")
+            let capabilities = device.capabilities.map { $0.rawValue }.joined(separator: ", ")
+            descriptionLabel.text = "Service: \(services)\n Capabilities: \(capabilities)"
             statusLabel.text = device.isConnected ? "Connected" : "Disconnected"
             statusIndicator.backgroundColor = device.isConnected ? .green : .gray
         }
@@ -49,6 +51,8 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         view.addSubview(descriptionLabel)
 
         statusLabel.frame = CGRect(x: 20, y: 200, width: view.frame.width - 40, height: 30)
+        statusLabel.numberOfLines = 0
+        statusLabel.lineBreakMode = .byWordWrapping
         view.addSubview(statusLabel)
         
         statusIndicator.frame = CGRect(x: view.frame.width - 60, y: 200, width: 20, height: 20)
@@ -124,7 +128,6 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
                 } else {
                     device.connect()
                 }
-                setupDeviceInfo()
             }
         }
     }
@@ -149,8 +152,6 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         DispatchQueue.main.async {
             self.device = device
             self.setupDeviceInfo()
-            self.connectButton.setTitle("Disconnect", for: .normal)
-            self.statusIndicator.backgroundColor = .green
             self.showSnackbar("Device connected")
         }
     }
@@ -160,8 +161,7 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         DispatchQueue.main.async {
             self.device = device
             self.setupDeviceInfo()
-            self.connectButton.setTitle("Connect", for: .normal)
-            self.statusIndicator.backgroundColor = .gray
+            self.showSnackbar("Device disconnected")
         }
     }
     
