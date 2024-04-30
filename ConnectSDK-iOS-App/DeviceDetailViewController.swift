@@ -34,6 +34,7 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
             let capabilities = device.capabilities.map { $0.rawValue }.joined(separator: ", ")
             descriptionLabel.text = "Service: \(services)\n Capabilities: \(capabilities)"
             statusLabel.text = device.isConnected ? "Connected" : "Disconnected"
+            connectButton.setTitle(device.isConnected ? "Disconect" : "Connect", for: .normal)
             statusIndicator.backgroundColor = device.isConnected ? .green : .gray
         }
         playButton.isEnabled = device?.isConnected ?? false
