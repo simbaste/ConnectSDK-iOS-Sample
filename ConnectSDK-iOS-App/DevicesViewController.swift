@@ -20,7 +20,7 @@ class DevicesViewController: UIViewController,
     var loaderView: UIView? // Vue pour l'écran de chargement
     var loadingLabel: UILabel?
     
-    var connectSDKWrapper = ConnectSDKWrapper()
+    var connectSDKWrapper: ConnectSDKWrapper!
     
     var hasReceivedDevices = false
 
@@ -47,7 +47,15 @@ class DevicesViewController: UIViewController,
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
-        connectSDKWrapper.delegate = self
+        connectSDKWrapper = ConnectSDKWrapperBuilder()
+            .setDelegate(self)
+            .setConnectSDKPlatforms(platforms: [
+                "AirPlayService": "ZeroConfDiscoveryProvider",
+                "DIALService": "SSDPDiscoveryProvider",
+                "DLNAService": "SSDPDiscoveryProvider",
+                "WebOSTVService": "SSDPDiscoveryProvider",
+                "CastService": "CastDiscoveryProvider",
+            ]).build()
         useFakeDevicesIfNeeded()
         findDevice()
     }
