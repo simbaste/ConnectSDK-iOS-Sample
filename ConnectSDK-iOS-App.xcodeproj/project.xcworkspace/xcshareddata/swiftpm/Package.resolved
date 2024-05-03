@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simbaste/ConnectSDKApi.git",
       "state" : {
-        "revision" : "e3dd9e6c516db5dd961a6b0e882df6739c72167e",
-        "version" : "1.1.3"
+        "revision" : "048964f56b84ffbc4387692daf8adaf9eb7de871",
+        "version" : "1.1.6"
       }
     }
   ],
