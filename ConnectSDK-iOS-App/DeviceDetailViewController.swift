@@ -116,11 +116,13 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         if device.isConnected {
             let volume = sender.value
             // Set volume on the connected device
-            // Example: device.setVolume(volume: volume, success: { ... }, failure: { ... })
-            device.setVolume(volume: volume) { launchSession in
-                print("Volume updated")
-            } failure: { error in
-                print("Failed to set the volume")
+            device.setVolume(volume: volume) { result in
+                switch result {
+                case .success(let launchSession):
+                    print("Volume updated")
+                case .failure(let error):
+                    print("Failed to set the volume")
+                }
             }
             
         }
@@ -142,22 +144,31 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
     
     fileprivate func togglePlayPause() {
         // Handle play/pause button action
-        device?.playingState(success: { state in
-            if (state == .playing) {
-                self.device?.pause(success: { succes in
-                    print("Video paused")
-                }, failure: { error in
-                    print("failed to pause video")
-                })
-            } else if (state == .paused) {
-                self.device?.play(success: { succes in
-                    print("Video played")
-                }, failure: { error in
-                    print("failed to play video")
-                })
+        device?.playingState(completion: { result in
+            switch result {
+            case .success(let state):
+                if state == .playing {
+                    self.device?.pause(completion: { res in
+                        switch res {
+                        case .success(_):
+                            print("Video paused")
+                        case .failure(_):
+                            print("Failed to pause video")
+                        }
+                    })
+                } else if state == .paused {
+                    self.device?.play(completion: { res in
+                        switch res {
+                        case .success(_):
+                            print("Video played")
+                        case .failure(_):
+                            print("Failed to play video")
+                        }
+                    })
+                }
+            case .failure(let error):
+                print("Cannot get playing state")
             }
-        }, failure: { error in
-            print("Cannot get playing state")
         })
     }
     
@@ -166,14 +177,17 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         animateButtonTap(sender)
         if sender == playButton {
             // Handle play button action
-            device?.openBrowser(with: "https://www.netgem.com/fr", success: { launchSession in
-                print("launch browser")
-                self.showSnackbar("Browser launched")
-                self.playPauseButton.isEnabled = true
-                self.seekBar.isEnabled = true
-            }, failure: { error in
-                print("launch browser failed")
-                self.showAlert("Launch browser failed", "Couldn't launch browser on the desired device")
+            device?.openBrowser(with: "https://www.netgem.com/fr", completion: { result in
+                switch result {
+                case .success(let launchSession):
+                    print("launch browser")
+                    self.showSnackbar("Browser launched")
+                    self.playPauseButton.isEnabled = true
+                    self.seekBar.isEnabled = true
+                case .failure(let error):
+                    print("launch browser failed")
+                    self.showAlert("Launch browser failed", "Couldn't launch browser on the desired device")
+                }
             })
         } else if sender == connectButton {
             if let device = device {
@@ -210,15 +224,19 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
             .setTitle(title)
             .setDescription(description)
             .setMimeType(mimeType)
-            .build(success: { mediaLaunchObject in
-                // Handle success
-                // Video playback started
-                self.showSnackbar("Video playback started")
-            }, failure: { error in
-                // Handle failure
-                // Video playback failed
-                self.showAlert("Video Playback Failed", "Failed to play video on the connected device")
+            .build(completion: { result in
+                switch result {
+                case .success(let mediaLaunchObject):
+                    // Handle success
+                    // Video playback started
+                    self.showSnackbar("Video playback started")
+                case .failure(let error):
+                    // Handle failure
+                    // Video playback failed
+                    self.showAlert("Video Playback Failed", "Failed to play video on the connected device")
+                }
             })
+            
     }
     
     // Function to animate button tap
@@ -236,8 +254,8 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
     
     // MARK: - ConnectableDeviceWrapperDelegate
     
-    func device(didConnected device: DeviceWrapper) {
-        print("didConnected device ==> \(device) isConnected ==> \(device.isConnected)")
+    func didConnect(device: DeviceWrapper) {
+        print("didConnect device ==> \(device) isConnected ==> \(device.isConnected)")
         DispatchQueue.main.async {
             self.device = device
             self.setupDeviceInfo()
@@ -245,8 +263,8 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         }
     }
     
-    func device(didDisconnected device: DeviceWrapper, withError error: Error) {
-        print("didDisconnected device \(device) with error \(error)")
+    func didDisconnect(device: DeviceWrapper, withError error: (any Error)?) {
+        print("didDisconnect device \(device) with error \(String(describing: error))")
         DispatchQueue.main.async {
             self.device = device
             self.setupDeviceInfo()
@@ -257,20 +275,21 @@ class DeviceDetailViewController: UIViewController, ConnectableDeviceWrapperDele
         }
     }
     
-    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingRequiredOfType pairingType: Int32) {
+    func didRequirePairing(ofType pairingType: Int32, with device: DeviceWrapper, service: DeviceServiceWrapper) {
         print("pairingRequiredOfType() called with device = \(device), service = \(service), pairingType = \(pairingType)")
         showAlert("Pairing Required", "Pairing is required for this service.")
     }
     
-    func deviceParingSucced(_device: DeviceWrapper, service: DeviceServiceWrapper) {
+    func didFailToPair(device: DeviceWrapper, service: DeviceServiceWrapper, withError error: any Error) {
+        print("pairingFailedWithError() called with device = \(device), service = \(service), error = \(error)")
+        showAlert("Pairing Failed", "Pairing failed with error: \(error.localizedDescription)")
+    }
+    
+    func didPair(device: DeviceWrapper, service: DeviceServiceWrapper) {
         print("deviceParingSucced() called with device = \(String(describing: device)), service = \(service)")
         self.showSnackbar("Device paired")
     }
     
-    func device(_ device: DeviceWrapper, service: DeviceServiceWrapper, pairingFailedWithError error: Error) {
-        print("pairingFailedWithError() called with device = \(device), service = \(service), error = \(error)")
-        showAlert("Pairing Failed", "Pairing failed with error: \(error.localizedDescription)")
-    }
     
     // MARK - Helpers functions
     
