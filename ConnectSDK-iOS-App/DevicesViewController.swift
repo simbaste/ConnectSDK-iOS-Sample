@@ -49,13 +49,7 @@ class DevicesViewController: UIViewController,
         
         connectSDKWrapper = ConnectSDKWrapperBuilder()
             .setDelegate(self)
-            .setConnectSDKPlatforms(platforms: [
-                "AirPlayService": "ZeroConfDiscoveryProvider",
-                "DIALService": "SSDPDiscoveryProvider",
-                "DLNAService": "SSDPDiscoveryProvider",
-                "WebOSTVService": "SSDPDiscoveryProvider",
-                "CastService": "CastDiscoveryProvider",
-            ]).build()
+            .setConnectSDKPlatforms(platforms: [.airplay, .dial, .dlna, .webos, .cast]).build()
         useFakeDevicesIfNeeded()
         findDevice()
     }
