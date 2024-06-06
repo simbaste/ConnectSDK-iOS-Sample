@@ -1,13 +1,13 @@
 {
-  "originHash" : "669eae5c1d6c0d882886019cb5e588c5d4b00b62d0a3bcf161d56b5abf4c6594",
+  "originHash" : "8c656fa80b5fee04294189f19f452bdb9c3ca6d7f19db182909a3dd796bc1144",
   "pins" : [
     {
-      "identity" : "connectsdkapi",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/simbaste/ConnectSDKApi.git",
+      "identity" : "connectsdkwrapper",
+      "kind" : "localSourceControl",
+      "location" : "/Users/stephane.mba/git/netgem-ios/ConnectSDKWrapper",
       "state" : {
-        "revision" : "db39e9e2e8424860bc817204f53c2e3a540dc2c0",
-        "version" : "1.1.12"
+        "branch" : "main",
+        "revision" : "bb5d6e3127d5ebec616c8bc2eb44e4e0c1ecf7b4"
       }
     }
   ],

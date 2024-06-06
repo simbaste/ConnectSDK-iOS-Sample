@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Network
+import NetworkExtension
 import ConnectSDKWrapper
 
 class DevicesViewController: UIViewController,
@@ -49,7 +51,7 @@ class DevicesViewController: UIViewController,
         
         connectSDKWrapper = ConnectSDKWrapperBuilder()
             .setDelegate(self)
-            .setConnectSDKPlatforms(platforms: [.airplay, .dial, .dlna, .webos, .cast]).build()
+            .setConnectSDKPlatforms(platforms: [.dial, .dlna, .webos, .cast]).build()
         useFakeDevicesIfNeeded()
         findDevice()
     }
